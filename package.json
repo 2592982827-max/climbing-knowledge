@@ -16,6 +16,10 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
     "@types/leaflet": "^1.9.21",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "wrangler": "^4.90.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp", "workerd"]
   }
 }
