@@ -1,0 +1,54 @@
+---
+import HomeLayout from "../../layouts/HomeLayout.astro";
+import HeroBanner from "../../components/sections/HeroBanner.astro";
+import SectionGrid from "../../components/sections/SectionGrid.astro";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "zh" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.params;
+
+const sections = {
+  zh: [
+    { title: "入门指南", description: "第一次去岩馆？第一次野攀？从这里开始你的攀岩之旅。", href: "/zh/guides/", icon: "&#x1F3C3;" },
+    { title: "技术动作", description: "抱石、传统攀的核心技术要领与动作解析。", href: "/zh/techniques/", icon: "&#x1F9D7;" },
+    { title: "装备指南", description: "攀岩鞋、安全带、快挂、保护器的选择与使用。", href: "/zh/equipment/", icon: "&#x26F0;" },
+    { title: "安全知识", description: "绳结打法、保护操作、风险管理——攀岩安全第一。", href: "/zh/safety/", icon: "&#x1F6E1;" },
+    { title: "训练方法", description: "指力、耐力、核心力量——科学训练提升攀爬能力。", href: "/zh/training/", icon: "&#x1F4AA;" },
+    { title: "伤病预防", description: "指滑车、肩膀、手肘常见损伤的预防与康复方案。", href: "/zh/injury/", icon: "&#x1FA7A;" },
+    { title: "等级对照", description: "V级、Font、YDS、French等多体系交互对照表。", href: "/zh/grades/", icon: "&#x1F4CA;" },
+    { title: "术语词典", description: "中英对照攀岩术语词典，含图解。", href: "/zh/terminology/", icon: "&#x1F4D6;" },
+    { title: "攀岩历史", description: "经典首攀故事、中国攀岩发展史、攀岩伦理。", href: "/zh/history/", icon: "&#x1F3F0;" },
+    { title: "装备选购", description: "按预算和水平推荐的攀岩装备选购指南。", href: "/zh/buying/", icon: "&#x1F6E0;" },
+    { title: "天气季节", description: "户外岩场的最佳攀爬季节与天气判断。", href: "/zh/weather/", icon: "&#x2600;" },
+    { title: "攀岩地图", description: "中国境内岩馆与户外岩场的交互式地图。", href: "/zh/map/", icon: "&#x1F5FA;" },
+  ],
+  en: [
+    { title: "Beginner Guides", description: "First time at a climbing gym? First outdoor climb? Start here.", href: "/en/guides/", icon: "&#x1F3C3;" },
+    { title: "Techniques", description: "Core techniques for bouldering and trad climbing.", href: "/en/techniques/", icon: "&#x1F9D7;" },
+    { title: "Equipment", description: "Choosing and using shoes, harnesses, quickdraws, belay devices.", href: "/en/equipment/", icon: "&#x26F0;" },
+    { title: "Safety", description: "Knots, belaying, risk management — safety comes first.", href: "/en/safety/", icon: "&#x1F6E1;" },
+    { title: "Training", description: "Finger strength, endurance, core — train smarter, climb harder.", href: "/en/training/", icon: "&#x1F4AA;" },
+    { title: "Injury Prevention", description: "Prevention and rehab for common finger, shoulder, and elbow injuries.", href: "/en/injury/", icon: "&#x1FA7A;" },
+    { title: "Grade Comparison", description: "Interactive comparison of V, Font, YDS, French grade systems.", href: "/en/grades/", icon: "&#x1F4CA;" },
+    { title: "Terminology", description: "Bilingual climbing term dictionary with illustrations.", href: "/en/terminology/", icon: "&#x1F4D6;" },
+    { title: "History", description: "Classic first ascents, China climbing history, climbing ethics.", href: "/en/history/", icon: "&#x1F3F0;" },
+    { title: "Buying Guide", description: "Equipment recommendations by budget and skill level.", href: "/en/buying/", icon: "&#x1F6E0;" },
+    { title: "Weather & Seasons", description: "Best seasons and weather conditions for outdoor crags.", href: "/en/weather/", icon: "&#x2600;" },
+    { title: "Climbing Map", description: "Interactive map of gyms and outdoor crags across China.", href: "/en/map/", icon: "&#x1F5FA;" },
+  ],
+};
+
+const localeStr = locale as string;
+const s = sections[localeStr] ?? sections.zh;
+const sectionTitle = localeStr === "zh" ? "探索攀岩知识" : "Explore Climbing Knowledge";
+---
+
+<HomeLayout locale={localeStr}>
+  <HeroBanner locale={localeStr} />
+  <SectionGrid sections={s} title={sectionTitle} />
+</HomeLayout>

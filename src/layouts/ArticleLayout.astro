@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SEO from "../components/layout/SEO.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import TableOfContents from "../components/ui/TableOfContents.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+  pubDate?: Date;
+  pubDateStr?: string;
+  ogImage?: string;
+}
+
+const { title, description, locale, pubDateStr, ogImage } = Astro.props;
+---
+
+<BaseLayout>
+  <slot name="head" slot="head">
+    <SEO
+      title={title}
+      description={description}
+      locale={locale}
+      ogImage={ogImage}
+    />
+  </slot>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex gap-8">
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-24">
+          <slot name="aside" />
+        </div>
+      </aside>
+      <article class="flex-1 min-w-0 max-w-3xl">
+        <Breadcrumbs locale={locale} />
+        <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mt-4 mb-2">{title}</h1>
+        {pubDateStr && (
+          <p class="text-sm text-stone-400 mb-8">{pubDateStr}</p>
+        )}
+        <div class="prose max-w-none">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,110 @@
+---
+import { gradeTable, columnInfo } from "../../data/grades";
+import type { ColumnKey } from "../../data/grades";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const isZh = locale === "zh";
+
+const allColumns: ColumnKey[] = ["v", "font", "yds", "french", "uiaa", "chinese"];
+const boulderCols: ColumnKey[] = ["v", "font"];
+const routeCols: ColumnKey[] = ["yds", "french", "uiaa", "chinese"];
+---
+
+<div class="overflow-hidden">
+  <div class="flex flex-wrap gap-2 mb-4" id="grade-filter-buttons">
+    <button data-filter="all" class="filter-btn px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium transition-colors">
+      {isZh ? "全部" : "All"}
+    </button>
+    <button data-filter="boulder" class="filter-btn px-4 py-2 bg-stone-200 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-300 transition-colors">
+      {isZh ? "抱石" : "Bouldering"}
+    </button>
+    <button data-filter="route" class="filter-btn px-4 py-2 bg-stone-200 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-300 transition-colors">
+      {isZh ? "运动攀" : "Sport"}
+    </button>
+  </div>
+
+  <div class="overflow-x-auto -mx-4 sm:mx-0">
+    <div class="inline-block min-w-full align-middle">
+      <div class="overflow-hidden rounded-xl border border-stone-200">
+        <table class="min-w-full divide-y divide-stone-200" id="grade-table">
+          <thead class="bg-stone-50">
+            <tr>
+              {allColumns.map((col) => {
+                const info = columnInfo[col];
+                const label = isZh ? info.nameZh : info.name;
+                const badge = info.type === "boulder"
+                  ? (isZh ? "抱石" : "Boulder")
+                  : (isZh ? "运动攀" : "Sport");
+                const badgeColor = info.type === "boulder"
+                  ? "bg-primary/10 text-primary"
+                  : "bg-secondary/10 text-secondary";
+                return (
+                  <th scope="col" class={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap grade-col col-${info.type}`}>
+                    <div>{label}</div>
+                    <span class={`inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] ${badgeColor}`}>{badge}</span>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100 bg-white">
+            {gradeTable.map((row) => (
+              <tr class="hover:bg-stone-50 transition-colors">
+                {allColumns.map((col) => (
+                  <td class={`px-4 py-2.5 text-sm font-mono text-stone-700 whitespace-nowrap grade-col col-${columnInfo[col].type}`}>
+                    {row[col]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-xs text-stone-400 mt-3">
+    {isZh ? "* 等级对照为近似对应关系，不同岩场和定线员标准有差异" : "* Grade conversions are approximate — standards vary between crags and route setters"}
+  </p>
+</div>
+
+<style>
+  .filter-btn.active {
+    background-color: var(--color-primary);
+    color: white;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  const rows = document.querySelectorAll<HTMLTableRowElement>("#grade-table tbody tr");
+  const cols = document.querySelectorAll<HTMLElement>(".grade-col");
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buttons.forEach((b) => {
+        b.classList.remove("active", "bg-primary", "text-white");
+        b.classList.add("bg-stone-200", "text-stone-700");
+      });
+      btn.classList.add("active", "bg-primary", "text-white");
+      btn.classList.remove("bg-stone-200", "text-stone-700");
+
+      const filter = btn.dataset.filter;
+      if (filter === "all") {
+        cols.forEach((c) => (c.style.display = ""));
+      } else if (filter === "boulder") {
+        cols.forEach((c) => {
+          c.style.display = c.classList.contains("col-route") ? "none" : "";
+        });
+      } else if (filter === "route") {
+        cols.forEach((c) => {
+          c.style.display = c.classList.contains("col-boulder") ? "none" : "";
+        });
+      }
+    });
+  });
+</script>

@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("history", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "攀岩历史" : "History"}
+  description={isZh ? "经典首攀故事、中国攀岩发展史、攀岩伦理。" : "Classic first ascents, China climbing history, climbing ethics."}
+  locale={locale}
+  {articles}
+/>

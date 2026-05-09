@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from "astro:content";
+import SectionIndexLayout from "../layouts/SectionIndexLayout.astro";
+import Card from "./ui/Card.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+  articles: CollectionEntry<"guides" | "techniques" | "equipment" | "safety" | "training" | "injury" | "grades" | "terminology" | "history" | "buying" | "weather">[];
+}
+
+const { title, description, locale, articles } = Astro.props;
+const isZh = locale === "zh";
+
+const localeArticles = articles
+  .filter((a) => a.id.startsWith(locale === "zh" ? "zh/" : "en/"))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<SectionIndexLayout title={title} description={description} locale={locale}>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {
+      localeArticles.length === 0 ? (
+        <p class="text-stone-400 col-span-full">{isZh ? "文章即将上线..." : "Articles coming soon..."}</p>
+      ) : (
+        localeArticles.map((a) => (
+          <Card
+            title={isZh ? a.data.title : (a.data.titleEn ?? a.data.title)}
+            description={isZh ? a.data.description : (a.data.descriptionEn ?? a.data.description)}
+            href={`/${locale}/${a.collection}/${a.id.replace(/^(zh|en)\//, "")}/`}
+          />
+        ))
+      )
+    }
+  </div>
+</SectionIndexLayout>

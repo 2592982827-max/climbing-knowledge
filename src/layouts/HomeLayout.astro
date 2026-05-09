@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SEO from "../components/layout/SEO.astro";
+import { site } from "../config/site";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const title = locale === "zh" ? site.name : site.nameEn;
+const description = locale === "zh" ? site.tagline : site.taglineEn;
+---
+
+<BaseLayout>
+  <slot name="head" slot="head">
+    <SEO
+      title={title}
+      description={description}
+      locale={locale}
+    />
+  </slot>
+  <slot />
+</BaseLayout>

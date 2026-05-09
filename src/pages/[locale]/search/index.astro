@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import FullWidthLayout from "../../../layouts/FullWidthLayout.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const title = isZh ? "搜索" : "Search";
+const desc = isZh ? "搜索攀岩知识库中的文章。" : "Search articles in the climbing knowledge base.";
+
+const collectionNames = ["guides", "techniques", "equipment", "safety", "training", "injury", "grades", "history", "buying", "weather"] as const;
+
+interface SearchItem {
+  title: string;
+  description: string;
+  href: string;
+  tags: string[];
+}
+
+const items: SearchItem[] = [];
+
+for (const col of collectionNames) {
+  const articles = await getCollection(col, ({ data }) => !data.draft);
+  for (const a of articles) {
+    const prefix = locale === "zh" ? "zh/" : "en/";
+    if (!a.id.startsWith(prefix)) continue;
+    items.push({
+      title: locale === "zh" ? a.data.title : (a.data.titleEn ?? a.data.title),
+      description: locale === "zh" ? a.data.description : (a.data.descriptionEn ?? a.data.description),
+      href: `/${locale}/${col}/${a.id.replace(prefix, "")}/`,
+      tags: a.data.tags ?? [],
+    });
+  }
+}
+---
+
+<FullWidthLayout title={title} description={desc} locale={locale}>
+  <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-6">{title}</h1>
+
+  <div class="mb-8">
+    <input
+      type="text"
+      id="search-input"
+      placeholder={isZh ? "搜索文章..." : "Search articles..."}
+      class="w-full px-4 py-3 border border-stone-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      autofocus
+    />
+  </div>
+
+  <div id="search-results" class="space-y-4">
+    <p class="text-stone-400 text-center py-8">
+      {isZh ? `请在上方输入关键词搜索（共 ${items.length} 篇文章）` : `Enter keywords above to search (${items.length} articles)`}
+    </p>
+  </div>
+
+  <template id="result-template">
+    <a class="block bg-white rounded-lg border border-stone-200 p-4 hover:border-primary hover:shadow-sm transition-all">
+      <h3 class="font-semibold text-stone-900 result-title"></h3>
+      <p class="mt-1 text-sm text-stone-500 result-desc"></p>
+    </a>
+  </template>
+</FullWidthLayout>
+
+<script type="application/json" id="search-data">
+  {JSON.stringify(items)}
+</script>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js"></script>
+<script is:inline src="/js/search.js"></script>

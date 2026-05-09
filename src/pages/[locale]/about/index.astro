@@ -1,0 +1,54 @@
+---
+import FullWidthLayout from "../../../layouts/FullWidthLayout.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+---
+
+<FullWidthLayout
+  title={isZh ? "关于本站" : "About"}
+  description={isZh ? "关于攀岩知识库" : "About Climbing Knowledge Base"}
+  locale={locale}
+>
+  <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-6">
+    {isZh ? "关于本站" : "About"}
+  </h1>
+
+  <div class="prose max-w-none">
+    {
+      isZh ? (
+        <>
+          <p>攀岩知识库是一个开放、免费的攀岩知识分享平台。</p>
+          <p>我们致力于收集和整理攀岩相关的中文知识内容，帮助更多人安全、科学地享受攀岩运动。</p>
+          <h2>我们的目标</h2>
+          <ul>
+            <li>降低攀岩入门的门槛</li>
+            <li>传播科学训练和伤病预防的知识</li>
+            <li>汇总中国境内的岩馆和户外岩场信息</li>
+            <li>建立中英双语攀岩术语对照</li>
+          </ul>
+          <h2>内容声明</h2>
+          <p>本站所有内容仅供学习参考。攀岩是一项有风险的运动，请在实际攀爬中寻求专业指导。</p>
+        </>
+      ) : (
+        <>
+          <p>Climbing Knowledge Base is an open, free platform for sharing climbing knowledge.</p>
+          <p>We collect and organize climbing-related knowledge to help more people enjoy climbing safely and scientifically.</p>
+          <h2>Our Goals</h2>
+          <ul>
+            <li>Lower the barrier to entry for climbing</li>
+            <li>Spread knowledge about scientific training and injury prevention</li>
+            <li>Compile information about climbing gyms and outdoor crags in China</li>
+            <li>Build a bilingual climbing terminology reference</li>
+          </ul>
+          <h2>Disclaimer</h2>
+          <p>All content on this site is for educational reference only. Climbing is a risky sport — please seek professional guidance when actually climbing.</p>
+        </>
+      )
+    }
+  </div>
+</FullWidthLayout>

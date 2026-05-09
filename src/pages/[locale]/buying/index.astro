@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("buying", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "装备选购" : "Buying Guide"}
+  description={isZh ? "按预算和水平推荐的攀岩装备选购指南。" : "Equipment recommendations by budget and skill level."}
+  locale={locale}
+  {articles}
+/>

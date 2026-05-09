@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SEO from "../components/layout/SEO.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+}
+
+const { title, description, locale } = Astro.props;
+---
+
+<BaseLayout>
+  <slot name="head" slot="head">
+    <SEO title={title} description={description} locale={locale} />
+  </slot>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs locale={locale} />
+    <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mt-4 mb-2">{title}</h1>
+    <p class="text-stone-500 mb-10">{description}</p>
+    <slot />
+  </div>
+</BaseLayout>

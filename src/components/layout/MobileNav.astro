@@ -1,0 +1,64 @@
+---
+import { mainNav } from "../../config/navigation";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const nav = mainNav[locale];
+---
+
+<button
+  id="mobile-nav-toggle"
+  class="lg:hidden p-2 text-stone-600 hover:text-primary"
+  aria-label="Toggle navigation"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div
+  id="mobile-nav-panel"
+  class="fixed inset-0 z-50 bg-white hidden lg:hidden"
+>
+  <div class="flex items-center justify-between p-4 border-b border-stone-200">
+    <span class="font-bold text-lg text-primary">{locale === "zh" ? "攀岩知识库" : "Climbing KB"}</span>
+    <button id="mobile-nav-close" class="p-2 text-stone-600">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="p-4 flex flex-col gap-1">
+    {nav.map((item) => (
+      <a
+        href={item.href}
+        class="px-4 py-3 text-lg font-medium text-stone-700 hover:text-primary hover:bg-stone-100 rounded-lg transition-colors"
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</div>
+
+<script>
+  const toggle = document.getElementById("mobile-nav-toggle");
+  const panel = document.getElementById("mobile-nav-panel");
+  const close = document.getElementById("mobile-nav-close");
+
+  toggle?.addEventListener("click", () => {
+    panel?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  });
+
+  close?.addEventListener("click", () => {
+    panel?.classList.add("hidden");
+    document.body.style.overflow = "";
+  });
+
+  panel?.addEventListener("click", (e) => {
+    const link = (e.target as HTMLElement).closest("a");
+    if (link) {
+      panel.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  });
+</script>

@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("injury", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "伤病预防" : "Injury Prevention"}
+  description={isZh ? "指滑车、肩膀、手肘常见损伤的预防与康复方案。" : "Prevention and rehab for common finger, shoulder, and elbow injuries."}
+  locale={locale}
+  {articles}
+/>

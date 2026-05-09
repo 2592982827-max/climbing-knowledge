@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("equipment", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "装备指南" : "Equipment"}
+  description={isZh ? "攀岩鞋、安全带、快挂、保护器的选择与使用。" : "Choosing and using shoes, harnesses, quickdraws, and belay devices."}
+  locale={locale}
+  {articles}
+/>

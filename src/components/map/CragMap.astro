@@ -1,0 +1,40 @@
+---
+import { crags } from "../../data/crags";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const isZh = locale === "zh";
+---
+
+<div id="crag-map" class="w-full h-[500px] md:h-[600px] rounded-xl border border-stone-200 z-0"></div>
+
+<div class="flex flex-wrap gap-2 mt-4" id="map-filters">
+  <button data-filter="all" class="map-filter-btn px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium transition-colors">
+    {isZh ? "全部" : "All"}
+  </button>
+  <button data-filter="gym" class="map-filter-btn px-4 py-2 bg-stone-200 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-300 transition-colors">
+    {isZh ? "岩馆" : "Gyms"}
+  </button>
+  <button data-filter="outdoor" class="map-filter-btn px-4 py-2 bg-stone-200 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-300 transition-colors">
+    {isZh ? "户外岩场" : "Outdoor"}
+  </button>
+</div>
+
+<script type="application/json" id="crag-data">
+  {JSON.stringify(crags)}
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script is:inline src="https://unpkg.com/gcoord@1.0.7/dist/gcoord.js"></script>
+<script is:inline src="/js/map.js"></script>
+
+<style>
+  #crag-map { z-index: 0; }
+  .custom-marker { background: none !important; border: none !important; }
+  .leaflet-popup-content { margin: 10px 14px; }
+</style>

@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ArticleLayout from "../layouts/ArticleLayout.astro";
+import TableOfContents from "./ui/TableOfContents.astro";
+import BackToTop from "./ui/BackToTop.astro";
+
+interface Props {
+  article: CollectionEntry<"guides" | "techniques" | "equipment" | "safety" | "training" | "injury" | "grades" | "terminology" | "history" | "buying" | "weather">;
+  locale: string;
+}
+
+const { article, locale } = Astro.props;
+const isZh = locale === "zh";
+const title = isZh ? article.data.title : (article.data.titleEn ?? article.data.title);
+const description = isZh ? article.data.description : (article.data.descriptionEn ?? article.data.description);
+const pubDateStr = article.data.pubDate.toLocaleDateString(isZh ? "zh-CN" : "en-US", {
+  year: "numeric", month: "long", day: "numeric",
+});
+---
+
+<ArticleLayout
+  title={title}
+  description={description}
+  locale={locale}
+  pubDateStr={pubDateStr}
+  ogImage={article.data.featuredImage}
+>
+  <TableOfContents slot="aside" locale={locale} />
+  <article set:html={article.body} />
+  <BackToTop />
+</ArticleLayout>

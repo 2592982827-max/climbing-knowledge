@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  open?: boolean;
+}
+
+const { title, open = false } = Astro.props;
+---
+
+<details class="bg-white rounded-lg border border-stone-200 my-4" {open}>
+  <summary class="px-4 py-3 font-medium text-stone-700 cursor-pointer select-none hover:text-primary transition-colors">
+    {title}
+  </summary>
+  <div class="px-4 pb-4 text-stone-600">
+    <slot />
+  </div>
+</details>

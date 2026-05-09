@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("techniques", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "技术动作" : "Techniques"}
+  description={isZh ? "抱石、传统攀的核心技术要领与动作解析。" : "Core techniques for bouldering and trad climbing."}
+  locale={locale}
+  {articles}
+/>

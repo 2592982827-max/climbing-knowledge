@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("weather", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "天气与季节" : "Weather & Seasons"}
+  description={isZh ? "户外岩场的最佳攀爬季节与天气判断。" : "Best seasons and weather conditions for outdoor crags."}
+  locale={locale}
+  {articles}
+/>

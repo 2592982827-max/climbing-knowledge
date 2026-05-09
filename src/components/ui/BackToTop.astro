@@ -1,0 +1,27 @@
+---
+import { t } from "../../config/translations";
+
+const locale = Astro.currentLocale ?? "zh";
+---
+
+<button
+  id="back-to-top"
+  class="fixed bottom-6 right-6 z-40 p-3 bg-primary text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary-dark"
+  aria-label={t("backToTop", locale)}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+  const btn = document.getElementById("back-to-top");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) {
+      btn?.classList.remove("opacity-0", "invisible");
+    } else {
+      btn?.classList.add("opacity-0", "invisible");
+    }
+  });
+  btn?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>

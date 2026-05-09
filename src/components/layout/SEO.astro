@@ -1,0 +1,49 @@
+---
+import { site } from "../../config/site";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+  ogImage?: string;
+  canonicalURL?: string;
+  alternateURL?: string;
+}
+
+const {
+  title,
+  description,
+  locale,
+  ogImage = site.ogImage,
+  canonicalURL,
+  alternateURL,
+} = Astro.props;
+
+const langTag = locale === "zh" ? "zh-CN" : "en";
+const altLang = locale === "zh" ? "en" : "zh";
+const fullTitle = `${title} | ${site.name}`;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+
+<link rel="alternate" hreflang={langTag} href={canonicalURL || Astro.url.href} />
+{
+  alternateURL && (
+    <link rel="alternate" hreflang={altLang === "zh" ? "zh-CN" : "en"} href={alternateURL} />
+  )
+}
+
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(ogImage, Astro.url).href} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

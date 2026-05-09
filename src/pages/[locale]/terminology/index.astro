@@ -1,0 +1,21 @@
+---
+import FullWidthLayout from "../../../layouts/FullWidthLayout.astro";
+import TermList from "../../../components/terminology/TermList.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const title = isZh ? "攀岩术语词典" : "Climbing Terminology";
+const desc = isZh
+  ? "中英对照攀岩术语词典，含45+常用术语的定义和图解。可按分类筛选、搜索。"
+  : "Bilingual climbing terminology dictionary with 45+ common terms. Filter by category or search.";
+---
+
+<FullWidthLayout title={title} description={desc} locale={locale}>
+  <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-2">{title}</h1>
+  <p class="text-stone-500 mb-8">{desc}</p>
+  <TermList {locale} />
+</FullWidthLayout>

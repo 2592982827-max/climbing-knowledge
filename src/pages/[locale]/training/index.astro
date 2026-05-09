@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import SectionIndex from "../../../components/SectionIndex.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const articles = await getCollection("training", ({ data }) => !data.draft);
+---
+
+<SectionIndex
+  title={isZh ? "训练方法" : "Training"}
+  description={isZh ? "指力、耐力、核心力量——科学训练提升攀爬能力。" : "Finger strength, endurance, core — train smarter, climb harder."}
+  locale={locale}
+  {articles}
+/>

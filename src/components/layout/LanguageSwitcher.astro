@@ -1,0 +1,17 @@
+---
+import { getAlternateUrl } from "../../lib/i18n";
+
+const locale = Astro.currentLocale ?? "zh";
+const currentPath = Astro.url.pathname;
+const alternatePath = getAlternateUrl(currentPath, locale);
+const label = locale === "zh" ? "EN" : "中文";
+const title = locale === "zh" ? "Switch to English" : "切换到中文";
+---
+
+<a
+  href={alternatePath}
+  title={title}
+  class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full border border-stone-300 hover:bg-stone-200 transition-colors"
+>
+  {label}
+</a>

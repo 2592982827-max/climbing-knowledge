@@ -1,0 +1,126 @@
+---
+import { terms } from "../../data/terminology";
+import type { Term } from "../../data/terminology";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const isZh = locale === "zh";
+
+const categories = [
+  { key: "all", label: isZh ? "全部" : "All" },
+  { key: "discipline", label: isZh ? "攀岩类型" : "Discipline" },
+  { key: "hold", label: isZh ? "岩点" : "Holds" },
+  { key: "move", label: isZh ? "动作" : "Moves" },
+  { key: "safety", label: isZh ? "安全" : "Safety" },
+  { key: "gear", label: isZh ? "装备" : "Gear" },
+  { key: "grade", label: isZh ? "等级" : "Grades" },
+  { key: "general", label: isZh ? "综合" : "General" },
+];
+
+const searchPlaceholder = isZh ? "搜索术语..." : "Search terms...";
+---
+
+<div class="mb-6 flex flex-col sm:flex-row gap-4">
+  <input
+    type="text"
+    id="term-search"
+    placeholder={searchPlaceholder}
+    class="flex-1 px-4 py-2.5 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+  />
+</div>
+
+<div class="flex flex-wrap gap-2 mb-6" id="term-category-filters">
+  {categories.map((cat) => (
+    <button
+      data-category={cat.key}
+      class={`term-cat-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${cat.key === "all" ? "bg-primary text-white" : "bg-stone-200 text-stone-700 hover:bg-stone-300"}`}
+    >
+      {cat.label}
+    </button>
+  ))}
+</div>
+
+<div id="term-list" class="space-y-4">
+  {terms.map((t: Term) => (
+    <div
+      class="term-item bg-white rounded-lg border border-stone-200 p-4"
+      data-category={t.category}
+      data-term={isZh ? t.term : t.termEn}
+      data-definition={isZh ? t.definition : t.definitionEn}
+    >
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h3 class="font-semibold text-stone-900">
+            {isZh ? t.term : t.termEn}
+            {isZh && t.term !== t.termEn && (
+              <span class="ml-2 text-sm font-normal text-stone-400">{t.termEn}</span>
+            )}
+            {!isZh && t.termEn !== t.term && (
+              <span class="ml-2 text-sm font-normal text-stone-400">{t.term}</span>
+            )}
+          </h3>
+          <p class="mt-1 text-sm text-stone-600 leading-relaxed">
+            {isZh ? t.definition : t.definitionEn}
+          </p>
+        </div>
+        <span class="flex-shrink-0 px-2 py-0.5 text-xs rounded-full bg-stone-100 text-stone-500">
+          {categories.find((c) => c.key === t.category)?.label ?? t.category}
+        </span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<p id="no-results" class="text-stone-400 text-center py-8 hidden">
+  {isZh ? "没有找到匹配的术语" : "No matching terms found"}
+</p>
+
+<script>
+  const searchInput = document.getElementById("term-search") as HTMLInputElement;
+  const categoryBtns = document.querySelectorAll<HTMLButtonElement>(".term-cat-btn");
+  const termItems = document.querySelectorAll<HTMLElement>(".term-item");
+  const noResults = document.getElementById("no-results")!;
+
+  let activeCategory = "all";
+
+  function filterTerms() {
+    const query = searchInput?.value.toLowerCase() ?? "";
+    let visible = 0;
+
+    termItems.forEach((item) => {
+      const cat = item.dataset.category ?? "";
+      const term = item.dataset.term?.toLowerCase() ?? "";
+      const definition = item.dataset.definition?.toLowerCase() ?? "";
+
+      const matchesCat = activeCategory === "all" || cat === activeCategory;
+      const matchesSearch = !query || term.includes(query) || definition.includes(query);
+
+      if (matchesCat && matchesSearch) {
+        item.style.display = "";
+        visible++;
+      } else {
+        item.style.display = "none";
+      }
+    });
+
+    noResults.style.display = visible === 0 ? "block" : "none";
+  }
+
+  searchInput?.addEventListener("input", filterTerms);
+
+  categoryBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeCategory = btn.dataset.category ?? "all";
+      categoryBtns.forEach((b) => {
+        b.classList.remove("bg-primary", "text-white");
+        b.classList.add("bg-stone-200", "text-stone-700");
+      });
+      btn.classList.add("bg-primary", "text-white");
+      btn.classList.remove("bg-stone-200", "text-stone-700");
+      filterTerms();
+    });
+  });
+</script>

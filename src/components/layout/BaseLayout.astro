@@ -1,0 +1,20 @@
+---
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
+
+const locale = Astro.currentLocale ?? "zh";
+---
+
+<!DOCTYPE html>
+<html lang={locale === "zh" ? "zh-CN" : "en"}>
+  <head>
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen flex flex-col bg-stone-50 text-stone-800 antialiased">
+    <Header locale={locale} />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SEO from "../components/layout/SEO.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+}
+
+const { title, description, locale } = Astro.props;
+---
+
+<BaseLayout>
+  <slot name="head" slot="head">
+    <SEO title={title} description={description} locale={locale} />
+  </slot>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <slot />
+  </div>
+</BaseLayout>

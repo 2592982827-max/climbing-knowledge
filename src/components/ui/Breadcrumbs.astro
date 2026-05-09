@@ -1,0 +1,52 @@
+---
+import { t } from "../../config/translations";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+
+const pathParts = Astro.url.pathname
+  .split("/")
+  .filter(Boolean)
+  .slice(1); // remove locale prefix
+
+const labels: Record<string, Record<string, string>> = {
+  guides: { zh: "入门指南", en: "Guides" },
+  techniques: { zh: "技术动作", en: "Techniques" },
+  equipment: { zh: "装备指南", en: "Equipment" },
+  safety: { zh: "安全知识", en: "Safety" },
+  training: { zh: "训练方法", en: "Training" },
+  injury: { zh: "伤病预防", en: "Injury Prevention" },
+  grades: { zh: "等级对照", en: "Grade Comparison" },
+  terminology: { zh: "术语词典", en: "Terminology" },
+  history: { zh: "攀岩历史", en: "History" },
+  buying: { zh: "装备选购", en: "Buying Guide" },
+  weather: { zh: "天气季节", en: "Weather & Seasons" },
+  map: { zh: "攀岩地图", en: "Climbing Map" },
+  search: { zh: "搜索", en: "Search" },
+  about: { zh: "关于本站", en: "About" },
+};
+---
+
+<nav class="flex items-center gap-1.5 text-sm text-stone-400 mb-6 flex-wrap" aria-label="Breadcrumb">
+  <a href={`/${locale}/`} class="hover:text-primary transition-colors">
+    {t("breadcrumb.home", locale)}
+  </a>
+  {pathParts.map((part, i) => {
+    const isLast = i === pathParts.length - 1;
+    const href = `/${locale}/${pathParts.slice(0, i + 1).join("/")}/`;
+    const label = labels[part]?.[locale] ?? part;
+    return (
+      <>
+        <span class="text-stone-300">/</span>
+        {isLast ? (
+          <span class="text-stone-600">{label}</span>
+        ) : (
+          <a href={href} class="hover:text-primary transition-colors">{label}</a>
+        )}
+      </>
+    );
+  })}
+</nav>

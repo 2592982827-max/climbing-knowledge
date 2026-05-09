@@ -1,0 +1,21 @@
+{
+  "name": "climbing-knowledge",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "fuse.js": "^7.3.0",
+    "gcoord": "^1.0.7",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/leaflet": "^1.9.21",
+    "tailwindcss": "^4.0.0"
+  }
+}

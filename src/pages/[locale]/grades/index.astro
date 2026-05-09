@@ -1,0 +1,21 @@
+---
+import FullWidthLayout from "../../../layouts/FullWidthLayout.astro";
+import GradeComparisonTable from "../../../components/grade/GradeComparisonTable.astro";
+
+export function getStaticPaths() {
+  return [{ params: { locale: "zh" } }, { params: { locale: "en" } }];
+}
+
+const { locale } = Astro.params;
+const isZh = locale === "zh";
+const title = isZh ? "攀岩等级对照表" : "Climbing Grade Comparison";
+const desc = isZh
+  ? "V级、枫丹白露、YDS、法国难度、UIAA、中国难度的交互式对照表。"
+  : "Interactive comparison of V-Scale, Font, YDS, French, UIAA, and Chinese grade systems.";
+---
+
+<FullWidthLayout title={title} description={desc} locale={locale}>
+  <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-2">{title}</h1>
+  <p class="text-stone-500 mb-8">{desc}</p>
+  <GradeComparisonTable {locale} />
+</FullWidthLayout>

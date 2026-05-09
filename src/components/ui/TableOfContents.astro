@@ -1,0 +1,55 @@
+---
+import { t } from "../../config/translations";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+---
+
+<details class="lg:hidden mb-6 bg-white rounded-lg border border-stone-200">
+  <summary class="px-4 py-3 font-medium text-stone-700 cursor-pointer select-none">
+    {t("toc.title", locale)}
+  </summary>
+  <nav class="px-4 pb-3" id="toc-mobile">
+    {/* Populated by TOC script */}
+  </nav>
+</details>
+
+<nav class="hidden lg:block" id="toc-desktop">
+  <h3 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3">
+    {t("toc.title", locale)}
+  </h3>
+  <div id="toc-list" class="space-y-1 text-sm">
+    {/* Populated by TOC script */}
+  </div>
+</nav>
+
+<script>
+  function buildTOC() {
+    const headings = document.querySelectorAll(".prose h2, .prose h3");
+    if (headings.length === 0) return;
+
+    const tocDesktop = document.getElementById("toc-list");
+    const tocMobile = document.getElementById("toc-mobile");
+
+    const items = Array.from(headings).map((h) => {
+      const id = h.textContent?.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "") ?? "";
+      h.id = id;
+      return { id, text: h.textContent ?? "", level: h.tagName };
+    });
+
+    const html = items
+      .map(
+        (item) =>
+          `<a href="#${item.id}" class="block py-1 hover:text-primary transition-colors ${item.level === "H3" ? "pl-4 text-stone-500" : "text-stone-700 font-medium"}">${item.text}</a>`
+      )
+      .join("");
+
+    if (tocDesktop) tocDesktop.innerHTML = html;
+    if (tocMobile) tocMobile.innerHTML = html;
+  }
+
+  buildTOC();
+</script>

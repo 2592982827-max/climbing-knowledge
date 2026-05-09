@@ -1,0 +1,37 @@
+---
+import { site } from "../../config/site";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const title = locale === "zh" ? site.name : site.nameEn;
+const tagline = locale === "zh" ? site.tagline : site.taglineEn;
+---
+
+<section class="relative bg-gradient-to-br from-stone-800 via-stone-700 to-primary-dark text-white py-20 md:py-32">
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMi4yLTEuOC00LTQtNHMtNCAxLjgtNCA0IDEuOCA0IDQgNCA0LTEuOCA0LTR6TTIwIDQwYzAtMi4yLTEuOC00LTQtNHMtNCAxLjgtNCA0IDEuOCA0IDQgNCA0LTEuOCA0LTR6TTQ4IDMyYzAtMi4yLTEuOC00LTQtNHMtNCAxLjgtNCA0IDEuOCA0IDQgNCA0LTEuOCA0LTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50"></div>
+  <div class="relative max-w-4xl mx-auto px-4 text-center">
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+      {title}
+    </h1>
+    <p class="text-lg md:text-xl text-stone-300 max-w-2xl mx-auto mb-8">
+      {tagline}
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a
+        href={`/${locale}/guides/`}
+        class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors text-lg"
+      >
+        {locale === "zh" ? "开始探索" : "Start Exploring"}
+      </a>
+      <a
+        href={`/${locale}/map/`}
+        class="inline-flex items-center px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/30 transition-colors text-lg"
+      >
+        {locale === "zh" ? "查找岩馆" : "Find a Gym"}
+      </a>
+    </div>
+  </div>
+</section>
