@@ -1,21 +1,17 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import ArticleLayout from "../layouts/ArticleLayout.astro";
 import TableOfContents from "./ui/TableOfContents.astro";
 import BackToTop from "./ui/BackToTop.astro";
 
 interface Props {
-  article: CollectionEntry<"guides" | "techniques" | "equipment" | "safety" | "training" | "injury" | "grades" | "terminology" | "history" | "buying" | "weather">;
+  title: string;
+  description: string;
   locale: string;
+  pubDateStr?: string;
+  ogImage?: string;
 }
 
-const { article, locale } = Astro.props;
-const isZh = locale === "zh";
-const title = isZh ? article.data.title : (article.data.titleEn ?? article.data.title);
-const description = isZh ? article.data.description : (article.data.descriptionEn ?? article.data.description);
-const pubDateStr = article.data.pubDate.toLocaleDateString(isZh ? "zh-CN" : "en-US", {
-  year: "numeric", month: "long", day: "numeric",
-});
+const { title, description, locale, pubDateStr, ogImage } = Astro.props;
 ---
 
 <ArticleLayout
@@ -23,9 +19,9 @@ const pubDateStr = article.data.pubDate.toLocaleDateString(isZh ? "zh-CN" : "en-
   description={description}
   locale={locale}
   pubDateStr={pubDateStr}
-  ogImage={article.data.featuredImage}
+  ogImage={ogImage}
 >
   <TableOfContents slot="aside" locale={locale} />
-  <article set:html={article.body} />
+  <slot />
   <BackToTop />
 </ArticleLayout>

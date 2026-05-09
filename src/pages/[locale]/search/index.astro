@@ -50,7 +50,7 @@ for (const col of collectionNames) {
     />
   </div>
 
-  <div id="search-results" class="space-y-4">
+  <div id="search-results" data-items={JSON.stringify(items)} class="space-y-4">
     <p class="text-stone-400 text-center py-8">
       {isZh ? `请在上方输入关键词搜索（共 ${items.length} 篇文章）` : `Enter keywords above to search (${items.length} articles)`}
     </p>
@@ -64,9 +64,49 @@ for (const col of collectionNames) {
   </template>
 </FullWidthLayout>
 
-<script type="application/json" id="search-data">
-  {JSON.stringify(items)}
-</script>
 
-<script is:inline src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js"></script>
-<script is:inline src="/js/search.js"></script>
+<script>
+  import Fuse from "fuse.js";
+
+  const input = document.getElementById("search-input") as HTMLInputElement;
+  const results = document.getElementById("search-results");
+  const template = document.getElementById("result-template") as HTMLTemplateElement;
+  if (!input || !results || !template) throw new Error("Search elements not found");
+
+  const isZh = document.documentElement.lang.startsWith("zh");
+  const defaultMsg = isZh ? "请在上方输入关键词搜索" : "Enter keywords above to search";
+  const noResultsMsg = isZh ? "没有找到相关文章" : "No matching articles found";
+
+  const searchData = JSON.parse(results.dataset.items || "[]");
+  if (!searchData.length) throw new Error("No search data found");
+
+  const fuse = new Fuse(searchData, {
+    keys: ["title", "description", "tags"],
+    threshold: 0.3,
+    includeScore: true,
+  });
+
+  input.addEventListener("input", function () {
+    const query = input.value.trim();
+    if (!query) {
+      results.innerHTML = '<p class="text-stone-400 text-center py-8">' + defaultMsg + "</p>";
+      return;
+    }
+
+    const found = fuse.search(query).slice(0, 20);
+    if (found.length === 0) {
+      results.innerHTML = '<p class="text-stone-400 text-center py-8">' + noResultsMsg + "</p>";
+      return;
+    }
+
+    results.innerHTML = "";
+    found.forEach(function (r) {
+      const item = r.item as any;
+      const clone = template.content.cloneNode(true) as DocumentFragment;
+      (clone.querySelector(".result-title") as HTMLElement).textContent = item.title;
+      (clone.querySelector(".result-desc") as HTMLElement).textContent = item.description;
+      (clone.querySelector("a") as HTMLAnchorElement).href = item.href;
+      results.appendChild(clone);
+    });
+  });
+</script>

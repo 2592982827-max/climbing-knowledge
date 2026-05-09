@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import ArticlePage from "../../../components/ArticlePage.astro";
 
 export async function getStaticPaths() {
@@ -9,12 +9,23 @@ export async function getStaticPaths() {
       locale: a.id.startsWith("zh/") ? "zh" : "en",
       slug: a.id.replace(/^(zh|en)\//, ""),
     },
-    props: { article: a },
   }));
 }
 
-const { article } = Astro.props;
-const locale = Astro.params.locale as string;
+const { locale, slug } = Astro.params;
+const articles = await getCollection("grades", ({ data }) => !data.draft);
+const prefix = locale + "/";
+const article = articles.find((a) => a.id === prefix + slug);
+if (!article) throw new Error(`Article not found: ${locale}/${slug}`);
+const { Content } = await render(article);
+const isZh = locale === "zh";
+const title = isZh ? article.data.title : (article.data.titleEn ?? article.data.title);
+const description = isZh ? article.data.description : (article.data.descriptionEn ?? article.data.description);
+const pubDateStr = article.data.pubDate.toLocaleDateString(isZh ? "zh-CN" : "en-US", {
+  year: "numeric", month: "long", day: "numeric",
+});
 ---
 
-<ArticlePage {article} {locale} />
+<ArticlePage {title} {description} {locale} {pubDateStr} ogImage={article.data.featuredImage}>
+  <Content />
+</ArticlePage>
